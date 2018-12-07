@@ -1,8 +1,10 @@
 package com.mini_video.service.impl;
 
 import com.mini_video.pojo.Users;
+import com.mini_video.pojo.UsersFans;
 import com.mini_video.pojo.UsersReport;
 import com.mini_video.repository.UserFansRepository;
+import com.mini_video.repository.UserReportRepository;
 import com.mini_video.repository.UserRepository;
 import com.mini_video.repository.UsersLikeVideosRepository;
 import com.mini_video.service.UserService;
@@ -29,6 +31,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserFansRepository userFansRepository;
+
+    @Autowired
+    private UserReportRepository userReportRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -73,13 +78,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveUserFanRelation(String userId, String fanId) {
-
+    public void saveUserFanRelation(Integer userId, Integer fanId) {
+        UsersFans usersFans = new UsersFans();
+        usersFans.setUserId(userId);
+        usersFans.setFanId(fanId);
+        userFansRepository.save(usersFans);
     }
 
     @Override
-    public void deleteUserFanRelation(String userId, String fanId) {
-
+    public void deleteUserFanRelation(Integer userId, Integer fanId) {
+        UsersFans usersFans = userFansRepository.findByUserIdAndFanId(userId, fanId);
+        userFansRepository.delete(usersFans);
     }
 
     @Override
@@ -93,6 +102,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void reportUser(UsersReport userReport) {
-
+        userReportRepository.save(userReport);
     }
 }

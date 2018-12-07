@@ -38,12 +38,12 @@ public interface UserService {
     /**
      * @Description: 增加用户和粉丝的关系
      */
-    public void saveUserFanRelation(String userId, String fanId);
+    public void saveUserFanRelation(Integer userId, Integer fanId);
 
     /**
      * @Description: 删除用户和粉丝的关系
      */
-    public void deleteUserFanRelation(String userId, String fanId);
+    public void deleteUserFanRelation(Integer userId, Integer fanId);
 
     /**
      * @Description: 查询用户是否关注

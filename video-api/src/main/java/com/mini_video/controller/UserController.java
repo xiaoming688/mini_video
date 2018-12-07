@@ -1,6 +1,9 @@
 package com.mini_video.controller;
 
 import com.mini_video.pojo.Users;
+import com.mini_video.pojo.UsersReport;
+import com.mini_video.pojo.vo.PublisherVideo;
+import com.mini_video.pojo.vo.PublisherVo;
 import com.mini_video.pojo.vo.UsersVO;
 import com.mini_video.service.UserService;
 import com.mini_video.utils.MData;
@@ -11,8 +14,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 /**
  * @author MM
@@ -38,8 +44,8 @@ public class UserController {
         long t1 = System.currentTimeMillis();
         Users userInfo = userService.queryUserInfo(Integer.valueOf(userId));
         long t2 = System.currentTimeMillis();
-        log.info(t2-t1);
-        if(userInfo == null){
+        log.info(t2 - t1);
+        if (userInfo == null) {
             return result.error("no data");
         }
         UsersVO userVO = new UsersVO();
@@ -50,5 +56,70 @@ public class UserController {
         return result;
     }
 
+    @PostMapping("/queryPublisher")
+    public MData queryPublisher(@RequestBody PublisherVo publisherVo) throws Exception {
+        MData result = new MData();
+        Integer publishUserId = publisherVo.getPublishUserId();
+        Integer videoId = publisherVo.getVideoId();
+        Integer loginUserId = publisherVo.getLoginUserId();
+        if (StringUtil.isBlank(publishUserId)) {
+            result.error("publishUserId is null");
+            return result;
+        }
 
+        // 1. 查询视频发布者的信息
+        Users userInfo = userService.queryUserInfo(publishUserId);
+        UsersVO publisher = new UsersVO();
+        BeanUtils.copyProperties(userInfo, publisher);
+
+        // 2. 查询当前登录者和视频的点赞关系
+        boolean userLikeVideo = userService.isUserLikeVideo(loginUserId, videoId);
+
+        PublisherVideo bean = new PublisherVideo();
+        bean.setPublisher(publisher);
+        bean.setUserLikeVideo(userLikeVideo);
+        result.put("data", bean);
+        return result;
+    }
+
+
+    @PostMapping("/beyourfans")
+    public MData beyourfans(@RequestBody Map<String, Object> paramsMap) throws Exception {
+        MData result = new MData();
+
+        if (StringUtil.isBlank(paramsMap.get("userId")) || StringUtil.isBlank(paramsMap.get("fanId"))) {
+            result.error("params is null");
+            return result;
+        }
+        Integer userId = Integer.valueOf(String.valueOf(paramsMap.get("userId")));
+        Integer fanId = Integer.valueOf(String.valueOf(paramsMap.get("fanId")));
+        userService.saveUserFanRelation(userId, fanId);
+        result.ok("关注成功...");
+        return result;
+    }
+
+    @PostMapping("/dontbeyourfans")
+    public MData dontbeyourfans(@RequestBody Map<String, Object> paramsMap) throws Exception {
+        MData result = new MData();
+        if (StringUtil.isBlank(paramsMap.get("userId")) || StringUtil.isBlank(paramsMap.get("fanId"))) {
+            result.error("params is null");
+            return result;
+        }
+        Integer userId = Integer.valueOf(String.valueOf(paramsMap.get("userId")));
+        Integer fanId = Integer.valueOf(String.valueOf(paramsMap.get("fanId")));
+        userService.deleteUserFanRelation(userId, fanId);
+
+        result.ok("取消关注成功...");
+        return result;
+    }
+
+    @PostMapping("/reportUser")
+    public MData reportUser(@RequestBody UsersReport usersReport) throws Exception {
+        MData result = new MData();
+        // 保存举报信息
+        userService.reportUser(usersReport);
+
+        result.ok("举报成功...");
+        return result;
+    }
 }
