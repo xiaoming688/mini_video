@@ -9,20 +9,20 @@ import java.util.Date;
 @Table(name = "videos")
 public class Videos {
     @Id
-    @GeneratedValue
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     /**
      * 发布者id
      */
     @Column(name = "user_id")
-    private String userId;
+    private Integer userId;
 
     /**
      * 用户使用音频的信息
      */
     @Column(name = "audio_id")
-    private String audioId;
+    private Integer audioId;
 
     /**
      * 视频描述
@@ -82,14 +82,14 @@ public class Videos {
     /**
      * @return id
      */
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
     /**
      * @param id
      */
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -98,7 +98,7 @@ public class Videos {
      *
      * @return user_id - 发布者id
      */
-    public String getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
@@ -107,7 +107,7 @@ public class Videos {
      *
      * @param userId 发布者id
      */
-    public void setUserId(String userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -116,7 +116,7 @@ public class Videos {
      *
      * @return audio_id - 用户使用音频的信息
      */
-    public String getAudioId() {
+    public Integer getAudioId() {
         return audioId;
     }
 
@@ -125,7 +125,7 @@ public class Videos {
      *
      * @param audioId 用户使用音频的信息
      */
-    public void setAudioId(String audioId) {
+    public void setAudioId(Integer audioId) {
         this.audioId = audioId;
     }
 

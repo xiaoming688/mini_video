@@ -1,17 +1,14 @@
-package com.mini_video.pojo;
+package com.mini_video.pojo.vo;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
-
-@Data
-@Entity
-@Table(name = "users")
-public class Users {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class UsersVO {
+    
+    private String id;
+	
+	private String userToken;
+	
+	private boolean isFollow;
 
     /**
      * 用户名
@@ -21,12 +18,12 @@ public class Users {
     /**
      * 密码
      */
+    @JsonIgnore
     private String password;
 
     /**
      * 我的头像，如果没有默认给一张
      */
-    @Column(name = "face_image")
     private String faceImage;
 
     /**
@@ -37,43 +34,29 @@ public class Users {
     /**
      * 我的粉丝数量
      */
-    @Column(name = "fans_counts")
     private Integer fansCounts;
 
     /**
      * 我关注的人总数
      */
-    @Column(name = "follow_counts")
     private Integer followCounts;
 
     /**
      * 我接受到的赞美/收藏 的数量
      */
-    @Column(name = "receive_like_counts")
     private Integer receiveLikeCounts;
 
-    public Users() {
-		super();
-	}
-    
-    public Users(Integer id, String username, String password, String faceImage, String nickname, Integer fansCounts,
-			Integer followCounts, Integer receiveLikeCounts) {
-		super();
-		this.id = id;
-		this.username = username;
-		this.password = password;
-		this.faceImage = faceImage;
-		this.nickname = nickname;
-		this.fansCounts = fansCounts;
-		this.followCounts = followCounts;
-		this.receiveLikeCounts = receiveLikeCounts;
-	}
-
-    public Integer getId() {
+    /**
+     * @return id
+     */
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    /**
+     * @param id
+     */
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -203,4 +186,19 @@ public class Users {
         this.receiveLikeCounts = receiveLikeCounts;
     }
 
+	public String getUserToken() {
+		return userToken;
+	}
+
+	public void setUserToken(String userToken) {
+		this.userToken = userToken;
+	}
+
+	public boolean isFollow() {
+		return isFollow;
+	}
+
+	public void setFollow(boolean isFollow) {
+		this.isFollow = isFollow;
+	}
 }
