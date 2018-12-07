@@ -1,0 +1,41 @@
+spring:
+  datasource:
+   
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    initialSize: 6
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  jpa:
+    show-sql: true
+
+#    schema:
+#      - classpath:department.sql
+
+#management:
+#  security:
+#    #是否启用安全
+#    enabled: false
+#  endpoints:
+#    shutdown:
+#      #开启shutdown端点
+#      enabled: true
+#      sensitive: false
+#    web:
+#      exposure:
+#        include: "*"
+#endpoints:
+#  shutdown:
+#    enabled: true
+logging:
+  path: D:\springBootLog\
+
+
+
