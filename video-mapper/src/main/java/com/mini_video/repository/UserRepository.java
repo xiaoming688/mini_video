@@ -14,6 +14,8 @@ public interface UserRepository extends JpaRepository<Users, Integer>, QuerydslP
 
     Users findByUsername(String userName);
 
+    Users findByOpenid(String opendId);
+
     @Query("select u from Users u where u.id=:id")
     Users findUser(@Param("id") Integer id);
 

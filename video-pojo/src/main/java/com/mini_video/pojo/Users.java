@@ -18,6 +18,8 @@ public class Users {
      */
     private String username;
 
+    private String openid;
+
     /**
      * 密码
      */
@@ -68,7 +70,13 @@ public class Users {
 		this.followCounts = followCounts;
 		this.receiveLikeCounts = receiveLikeCounts;
 	}
+    public String getOpenid() {
+        return openid;
+    }
 
+    public void setOpenid(String openid) {
+        this.openid = openid;
+    }
     public Integer getId() {
         return id;
     }

@@ -6,6 +6,8 @@ import com.mini_video.pojo.vo.PublisherVideo;
 import com.mini_video.pojo.vo.PublisherVo;
 import com.mini_video.pojo.vo.UsersVO;
 import com.mini_video.service.UserService;
+import com.mini_video.utils.AliyunOSSUtil;
+import com.mini_video.utils.Constants;
 import com.mini_video.utils.MData;
 import com.mini_video.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -13,11 +15,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -33,6 +36,67 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AliyunOSSUtil aliyunOSSUtil;
+
+
+    @PostMapping("/uploadFace")
+    public MData uploadFace(String userId,
+                            @RequestParam("file") MultipartFile[] files) throws Exception {
+        MData result = new MData();
+        if (StringUtils.isBlank(userId)) {
+            result.error("用户id不能为空...");
+            return result;
+        }
+
+        // 保存到数据库中的相对路径
+        String uploadPathDB = "";
+
+        FileOutputStream fileOutputStream = null;
+        InputStream inputStream = null;
+        try {
+            if (files != null && files.length > 0) {
+
+                String fileName = files[0].getOriginalFilename();
+                log.info("fileName: " + fileName);
+                if (StringUtils.isNotBlank(fileName)) {
+
+                    String fileExtension = fileName.substring(fileName.lastIndexOf("."));
+
+                    long currentTimeMillis = System.currentTimeMillis();
+
+                    // 文件上传的最终保存路径
+                    String key = Constants.OSS_FACE_FOLDER + userId + "/" + currentTimeMillis + fileExtension;
+                    log.info("key: " + key);
+                    String uploadRes = aliyunOSSUtil.uploadInputStream(key, files[0].getInputStream());
+                    result.put("data", key);
+                    log.info("uploadRes: " + uploadRes);
+                    uploadPathDB = key;
+                }
+
+            } else {
+                result.error("用户id不能为空...");
+                return result;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.error("用户id不能为空...");
+            return result;
+        } finally {
+            if (fileOutputStream != null) {
+                fileOutputStream.flush();
+                fileOutputStream.close();
+            }
+        }
+
+        Users user = userService.queryUserInfo(Integer.valueOf(userId));
+        user.setId(Integer.valueOf(userId));
+        user.setFaceImage(uploadPathDB);
+        userService.updateUserInfo(user);
+
+        return result;
+    }
 
 
     @PostMapping("/query")

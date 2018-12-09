@@ -29,8 +29,10 @@ public class MiniInterceptor implements HandlerInterceptor {
 		String userToken = request.getHeader("headerUserToken");
 		MData result = new MData();
 
+		System.out.println("userId: "+ userId+ " userToken: "+ userToken);
 		if (StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(userToken)) {
 			String uniqueToken = redis.get(Constants.USER_REDIS_SESSION + ":" + userId);
+			System.out.println("uniqueToken: "+ uniqueToken);
 			if (StringUtils.isEmpty(uniqueToken) && StringUtils.isBlank(uniqueToken)) {
 				System.out.println("请登录...");
 				result.error("请登录...");

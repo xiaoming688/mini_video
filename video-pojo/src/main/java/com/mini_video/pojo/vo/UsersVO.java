@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class UsersVO {
     
-    private String id;
+    private Integer id;
 	
 	private String userToken;
 	
@@ -49,14 +49,14 @@ public class UsersVO {
     /**
      * @return id
      */
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
     /**
      * @param id
      */
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

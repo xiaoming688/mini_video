@@ -13,7 +13,9 @@ public interface UserService {
     /**
      * @Description: 保存用户(用户注册)
      */
-    public void saveUser(Users user);
+    public Users saveUser(Users user);
+
+    Users queryUserByOpenId(String opendId);
 
     /**
      * @Description: 用户登录，根据用户名和密码查询用户

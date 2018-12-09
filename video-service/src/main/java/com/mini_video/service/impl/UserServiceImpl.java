@@ -45,10 +45,16 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username) != null;
     }
 
+    @Override
+    public Users queryUserByOpenId(String openId) {
+
+        return userRepository.findByOpenid(openId);
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void saveUser(Users user) {
-        userRepository.save(user);
+    public Users saveUser(Users user) {
+        return userRepository.save(user);
     }
 
     @Override

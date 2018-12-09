@@ -17,4 +17,7 @@ public class Constants {
     // 每页分页的记录数
     public static final Integer PAGE_SIZE = 5;
 
+    public final static String OSS_FACE_FOLDER = "pictureframe/mini_video/face/";
+
+
 }
