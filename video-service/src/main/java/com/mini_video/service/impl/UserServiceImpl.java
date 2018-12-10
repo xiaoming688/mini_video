@@ -8,6 +8,7 @@ import com.mini_video.repository.UserReportRepository;
 import com.mini_video.repository.UserRepository;
 import com.mini_video.repository.UsersLikeVideosRepository;
 import com.mini_video.service.UserService;
+import com.mini_video.utils.BeanCopyUtil;
 import com.mini_video.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -110,4 +111,16 @@ public class UserServiceImpl implements UserService {
     public void reportUser(UsersReport userReport) {
         userReportRepository.save(userReport);
     }
+
+    @Override
+    @Transactional
+    public Users updateUsers(Users user) {
+        if (user.getId() == null) {
+            return null;
+        }
+        Users saveTask = userRepository.findUser(user.getId());
+        BeanCopyUtil.beanCopyWithIngore(user, saveTask, "password");
+        return userRepository.saveAndFlush(saveTask);
+    }
+
 }

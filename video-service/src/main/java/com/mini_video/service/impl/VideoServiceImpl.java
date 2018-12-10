@@ -17,6 +17,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -35,6 +36,11 @@ public class VideoServiceImpl implements VideoService {
     @Autowired
     private EntityManager em;
 
+    @Override
+    @Transactional
+    public Videos saveVideo(Videos video) {
+        return videosRepository.save(video);
+    }
 
     @Override
     public PagedResult getAllVideos(Videos video, Integer isSaveRecord, Integer page, Integer pageSize) {
@@ -74,7 +80,7 @@ public class VideoServiceImpl implements VideoService {
             jpaQuery.where(qUsers.id.eq(userId));
         }
         if (desc != null) {
-            jpaQuery.where(qVideos.videoDesc.like("%"+desc+"%"));
+            jpaQuery.where(qVideos.videoDesc.like("%" + desc + "%"));
         }
         List<VideosVO> list = jpaQuery.fetch();
 

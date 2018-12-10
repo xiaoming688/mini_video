@@ -20,4 +20,5 @@ public interface UserRepository extends JpaRepository<Users, Integer>, QuerydslP
     Users findUser(@Param("id") Integer id);
 
     Users findByUsernameAndPassword(String userName, String passWord);
+
 }

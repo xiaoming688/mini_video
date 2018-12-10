@@ -10,4 +10,6 @@ public interface VideoService {
      */
     public PagedResult getAllVideos(Videos video, Integer isSaveRecord,
                                     Integer page, Integer pageSize);
+
+    Videos saveVideo(Videos video);
 }

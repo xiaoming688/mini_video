@@ -30,16 +30,16 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
-        registry.addInterceptor(miniInterceptor()).addPathPatterns("/miniVideo/user/**")
-                .addPathPatterns("/miniVideo/video/upload", "/miniVideo/video/uploadCover",
-                        "/miniVideo/video/userLike", "/miniVideo/video/userUnLike",
-                        "/miniVideo/video/saveComment")
-                .addPathPatterns("/miniVideo/bgm/**")
-                .excludePathPatterns("/miniVideo/user/queryPublisher", "/miniVideo/user/regist",
-                        "/miniVideo/user/login", "/miniVideo/user/onLogin",
-                        "/miniVideo/user/mini/userInfoDetail");
-
-        super.addInterceptors(registry);
+//        registry.addInterceptor(miniInterceptor()).addPathPatterns("/miniVideo/user/**")
+//                .addPathPatterns("/miniVideo/video/upload", "/miniVideo/video/uploadCover",
+//                        "/miniVideo/video/userLike", "/miniVideo/video/userUnLike",
+//                        "/miniVideo/video/saveComment")
+//                .addPathPatterns("/miniVideo/bgm/**")
+//                .excludePathPatterns("/miniVideo/user/queryPublisher", "/miniVideo/user/regist",
+//                        "/miniVideo/user/login", "/miniVideo/user/onLogin",
+//                        "/miniVideo/user/mini/userInfoDetail");
+//
+//        super.addInterceptors(registry);
     }
 
 }

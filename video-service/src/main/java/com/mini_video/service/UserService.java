@@ -56,4 +56,7 @@ public interface UserService {
      * @Description: 举报用户
      */
     public void reportUser(UsersReport userReport);
+
+
+    Users updateUsers(Users user);
 }

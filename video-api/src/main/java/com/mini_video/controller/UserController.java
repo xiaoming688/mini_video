@@ -40,6 +40,15 @@ public class UserController {
     @Autowired
     private AliyunOSSUtil aliyunOSSUtil;
 
+    @PostMapping("/updateUserTest")
+    public MData updateUserTest(@RequestBody Users users) {
+        MData result = new MData();
+
+        Users upate = userService.updateUsers(users);
+        result.put("data", upate);
+        return result;
+    }
+
 
     @PostMapping("/uploadFace")
     public MData uploadFace(String userId,
