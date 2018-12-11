@@ -26,6 +26,6 @@ public class BgmServiceImpl implements BgmService {
 
     @Override
     public Bgm queryBgmById(Integer bgmId) {
-        return bgmRepository.getOne(bgmId);
+        return bgmRepository.findBgm(bgmId);
     }
 }

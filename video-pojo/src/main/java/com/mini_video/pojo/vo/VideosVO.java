@@ -3,7 +3,7 @@ package com.mini_video.pojo.vo;
 import java.util.Date;
 
 public class VideosVO {
-    private String id;
+    private Integer id;
     private Integer userId;
     private Integer audioId;
     private String videoDesc;
@@ -35,14 +35,14 @@ public class VideosVO {
 		this.nickname = nickname;
 	}
 
-	public String getId() {
+	public Integer getId() {
         return id;
     }
 
     /**
      * @param id
      */
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

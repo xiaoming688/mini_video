@@ -78,10 +78,12 @@ public class VideoServiceImpl implements VideoService {
         QVideos qVideos = QVideos.videos;
         QUsers qUsers = QUsers.users;
 //        JPAQueryFactory query = new JPAQueryFactory(entityManager);
-        JPAQuery jpaQuery = new JPAQuery<>(em).select(Projections.bean(VideosVO.class, qVideos.audioId,
+        JPAQuery jpaQuery = new JPAQuery<>(em).select(Projections.bean(VideosVO.class,
+                qVideos.audioId,qVideos.id, qVideos.userId,
                 qVideos.videoDesc, qVideos.videoPath, qVideos.videoSeconds,
                 qVideos.videoWidth, qVideos.videoHeight, qVideos.coverPath,
-                qVideos.likeCounts, qVideos.status, qUsers.faceImage, qUsers.nickname))
+                qVideos.likeCounts, qVideos.status,
+                qUsers.faceImage, qUsers.nickname))
                 .from(qVideos)
                 .leftJoin(qUsers)
                 .on(qUsers.id.eq(qVideos.userId));
