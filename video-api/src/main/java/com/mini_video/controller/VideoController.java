@@ -2,6 +2,7 @@ package com.mini_video.controller;
 
 
 import com.mini_video.pojo.Bgm;
+import com.mini_video.pojo.Comments;
 import com.mini_video.pojo.Videos;
 import com.mini_video.service.BgmService;
 import com.mini_video.service.VideoService;
@@ -22,6 +23,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static com.mini_video.utils.Constants.FILE_SPACE;
@@ -47,17 +50,23 @@ public class VideoController {
         MData result = new MData();
         String outFilePath = request.getSession().getServletContext().getRealPath("/WEB-INF/tmp");
         log.info("outFilePath: " + outFilePath);
-        MergeVideoMp3 tool = new MergeVideoMp3("/usr/local/ffmpeg-4.1/ffmpeg");
+        MergeVideoMp3 tool = new MergeVideoMp3("/usr/local/ffmpeg-3.1.3/ffmpeg");
 
         try {
-            tool.convertor("http://timg.inabook.cn/pictureframe/mini_video/video/test1.mp4",
-                    "http://timg.inabook.cn/pictureframe/mini_video/bgm/test1.mp3", 14,
-                    "/var/www/temp/t.mp4");
+            String input = commonConstants.getOssHost() + "pictureframe/mini_video/video/test1.mp4";
+            String temp = "/var/www/temp/t1.mp4";
+            String output = "/var/www/temp/t.mp4";
+            tool.convertor1(input, 14, temp);
+            tool.convertor(temp,
+                    commonConstants.getOssHost() + "pictureframe/mini_video/bgm/test1.mp3", 14,
+                    output);
 
-            String res = aliyunOSSUtil.uploadFileRequest("pictureframe/mini_video/video/test2.mp4", "/var/www/temp/t.mp4");
+            String res = aliyunOSSUtil.uploadFileRequest("pictureframe/mini_video/video/test2.mp4", output);
             // 删除临时文件
-            File file = new File("/var/www/temp/t.mp4");
+            File file = new File(temp);
+            File file1 = new File(output);
             file.delete();
+            file1.delete();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -166,4 +175,138 @@ public class VideoController {
         return result;
     }
 
+
+    /**
+     * @Description: 我关注的人发的视频
+     */
+    @PostMapping("/showMyFollow")
+    public MData showMyFollow(@RequestBody Map<String, Object> paramsMap) throws Exception {
+
+        MData result = new MData();
+
+        if (StringUtil.isBlank(paramsMap.get("userId"))) {
+            result.error("userId is null");
+            return result;
+        }
+        String userId = String.valueOf(paramsMap.get("userId"));
+
+        Object page = paramsMap.get("page");
+        if (page == null) {
+            page = 1;
+        }
+
+        int pageSize = 6;
+
+        PagedResult videosList = videoService.queryMyFollowVideos(userId, (Integer) (page), pageSize);
+        result.put("data", videosList);
+        return result;
+    }
+
+
+    /**
+     * @Description: 我收藏(点赞)过的视频列表
+     */
+    @PostMapping("/showMyLike")
+    public MData showMyLike(@RequestBody Map<String, Object> paramsMap) throws Exception {
+
+        MData result = new MData();
+
+        if (StringUtil.isBlank(paramsMap.get("userId"))) {
+            result.error("userId is null");
+            return result;
+        }
+        String userId = String.valueOf(paramsMap.get("userId"));
+
+        Object page = paramsMap.get("page");
+        if (page == null) {
+            page = 1;
+        }
+
+        int pageSize = 6;
+
+        PagedResult videosList = videoService.queryMyLikeVideos(userId, (Integer) (page), pageSize);
+
+        result.put("data", videosList);
+        return result;
+    }
+
+    @PostMapping(value = "/hot")
+    public MData hot() throws Exception {
+        MData result = new MData();
+
+        List<String> data = videoService.queryHostWords();
+        result.put("data", data);
+        return result;
+    }
+
+
+    @PostMapping(value = "/userLike")
+    public MData userLike(@RequestBody Map<String, Object> paramsMap)
+            throws Exception {
+        MData result = new MData();
+        String userId = String.valueOf(paramsMap.get("userId"));
+        String videoId = String.valueOf(paramsMap.get("videoId"));
+        String videoCreaterId = String.valueOf(paramsMap.get("videoCreaterId"));
+        if (StringUtil.isBlank(userId) || StringUtil.isBlank(videoId) || StringUtil.isBlank(videoCreaterId)) {
+            result.error("");
+            return result;
+        }
+
+        videoService.userLikeVideo(userId, videoId, videoCreaterId);
+        return result;
+    }
+
+
+    @PostMapping(value = "/userUnLike")
+    public MData userUnLike(@RequestBody Map<String, Object> paramsMap) throws Exception {
+        MData result = new MData();
+        String userId = String.valueOf(paramsMap.get("userId"));
+        String videoId = String.valueOf(paramsMap.get("videoId"));
+        String videoCreaterId = String.valueOf(paramsMap.get("videoCreaterId"));
+        if (StringUtil.isBlank(userId) || StringUtil.isBlank(videoId) || StringUtil.isBlank(videoCreaterId)) {
+            result.error("");
+            return result;
+        }
+
+        videoService.userUnLikeVideo(userId, videoId, videoCreaterId);
+        return result;
+    }
+
+
+    @PostMapping("/saveComment")
+    public MData saveComment(@RequestBody Comments comment) throws Exception {
+        MData result = new MData();
+
+        Comments comments = videoService.saveComment(comment);
+
+        result.put("commentsId", comments.getId());
+        return result;
+    }
+
+
+    @PostMapping("/getVideoComments")
+    public MData getVideoComments(@RequestBody Map<String, Object> paramsMap) throws Exception {
+
+        MData result = new MData();
+        String videoId = String.valueOf(paramsMap.get("videoId"));
+        if (StringUtil.isBlank(videoId)) {
+            result.error("videoId is null");
+            return result;
+        }
+
+        // 分页查询视频列表，时间顺序倒序排序
+        Object page = paramsMap.get("page");
+        if (page == null) {
+            page = 1;
+        }
+        Object pageSize = paramsMap.get("pageSize");
+        if (pageSize == null) {
+            pageSize = 10;
+        }
+
+        PagedResult list = videoService.getAllComments(Integer.valueOf(videoId), (Integer) page, (Integer) pageSize);
+
+        result.put("data", list);
+        return result;
+    }
 }

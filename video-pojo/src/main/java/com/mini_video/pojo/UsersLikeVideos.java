@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class UsersLikeVideos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Integer id;
 
     /**
      * 用户

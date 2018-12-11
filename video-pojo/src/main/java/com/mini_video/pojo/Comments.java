@@ -10,7 +10,7 @@ import java.util.Date;
 @Table(name = "comments")
 public class Comments {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "father_comment_id")
