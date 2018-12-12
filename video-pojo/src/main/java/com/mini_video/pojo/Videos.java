@@ -55,12 +55,6 @@ public class Videos {
     private Integer videoHeight;
 
     /**
-     * 视频封面图
-     */
-    @Column(name = "cover_path")
-    private String coverPath;
-
-    /**
      * 喜欢/赞美的数量
      */
     @Column(name = "like_counts")
@@ -217,24 +211,6 @@ public class Videos {
      */
     public void setVideoHeight(Integer videoHeight) {
         this.videoHeight = videoHeight;
-    }
-
-    /**
-     * 获取视频封面图
-     *
-     * @return cover_path - 视频封面图
-     */
-    public String getCoverPath() {
-        return coverPath;
-    }
-
-    /**
-     * 设置视频封面图
-     *
-     * @param coverPath 视频封面图
-     */
-    public void setCoverPath(String coverPath) {
-        this.coverPath = coverPath;
     }
 
     /**

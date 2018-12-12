@@ -139,8 +139,7 @@ public class RegistLoginController {
             redisOperator.set(appId + "_" + openid, sessionKey.toString(), 1000 * 30 * 10);
 
             Users user = userService.queryUserByOpenId(String.valueOf(openid));
-            if (user != null) {
-            } else {
+            if (user == null) {
                 user = new Users();
                 user.setOpenid(String.valueOf(openid));
                 user.setFansCounts(0);

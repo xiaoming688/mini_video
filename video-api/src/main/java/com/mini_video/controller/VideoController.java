@@ -44,14 +44,14 @@ public class VideoController {
         MData result = new MData();
         String outFilePath = request.getSession().getServletContext().getRealPath("/WEB-INF/tmp");
         log.info("outFilePath: " + outFilePath);
-        MergeVideoMp3 tool = new MergeVideoMp3("/usr/local/ffmpeg-3.1.3/ffmpeg");
+        MergeVideoMp3 tool = new MergeVideoMp3("/usr/local/ffmpeg-4.1/ffmpeg");
 
         try {
             String input = commonConstants.getOssHost() + "pictureframe/mini_video/video/test1.mp4";
             String temp = "/var/www/temp/t1.mp4";
             String output = "/var/www/temp/t.mp4";
-            tool.convertor1(input, 14, temp);
-            tool.convertor(temp,
+//            tool.convertor1(input, 14, temp);
+            tool.convertor(input,
                     commonConstants.getOssHost() + "pictureframe/mini_video/bgm/test1.mp3", 14,
                     output);
 
@@ -114,9 +114,9 @@ public class VideoController {
         // 判断bgmId是否为空，如果不为空，
         // 那就查询bgm的信息，并且合并视频，生产新的视频
         if (StringUtil.isNotBlank(bgmId)) {
-            log.info("bgmId: " + bgmId);
             Bgm bgm = bgmService.queryBgmById(bgmId);
             String mp3InputPath = commonConstants.getOssHost() + bgm.getPath();
+            log.info("bgmId: " + bgmId + " mp3path: " + mp3InputPath);
 
             MergeVideoMp3 tool = new MergeVideoMp3(Constants.FFMPEG_EXE);
             String videoInputPath = Constants.TEMP_PATH + ossFileName;
@@ -136,7 +136,7 @@ public class VideoController {
         video.setVideoWidth(videoWidth);
         video.setVideoDesc(desc);
         video.setVideoPath(uploadPathDB);
-        video.setCoverPath(uploadPathDB + Constants.VIDEO_FRAME_PREFIX);
+        video.setLikeCounts(0L);
         video.setStatus(Constants.SUCCESS);
         video.setCreateTime(new Date());
 
@@ -164,6 +164,7 @@ public class VideoController {
         if (pageSize == null) {
             pageSize = Constants.PAGE_SIZE;
         }
+        pageSize = 3;
 
         PagedResult result1 = videoService.getAllVideos(video, isSaveRecord, page, pageSize);
         result.put("data", result1);
@@ -190,7 +191,7 @@ public class VideoController {
             page = 1;
         }
 
-        int pageSize = 6;
+        int pageSize = 3;
 
         PagedResult videosList = videoService.queryMyFollowVideos(userId, (Integer) (page), pageSize);
         result.put("data", videosList);

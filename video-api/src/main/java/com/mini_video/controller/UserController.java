@@ -61,9 +61,7 @@ public class UserController {
 
         // 保存到数据库中的相对路径
         String uploadPathDB = "";
-
         FileOutputStream fileOutputStream = null;
-        InputStream inputStream = null;
         try {
             if (files != null && files.length > 0) {
 

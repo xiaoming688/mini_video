@@ -30,8 +30,10 @@ public class MergeVideoMp3 {
         command.add("-t");
         command.add(String.valueOf(seconds));
 
-        command.add("-qscale");
-        command.add(String.valueOf(6));
+//        command.add("-qscale");
+//        command.add(String.valueOf(6));
+        command.add("-vcodec");
+        command.add("copy");
 
         command.add("-y");
         command.add(videoOutputPath);
@@ -102,8 +104,8 @@ public class MergeVideoMp3 {
     public static void main(String[] args) {
         MergeVideoMp3 ffmpeg = new MergeVideoMp3("D:\\soft\\ffmpeg-win64\\bin\\ffmpeg.exe");
         try {
-//            ffmpeg.convertor("pictureframe/mini_video/video/test1.mp4",
-//                    "pictureframe/mini_video/bgm/test1.mp3", 14, "D:\\soft\\t222.mp4");
+            ffmpeg.convertor("D:\\soft\\test1.mp4",
+                    "D:\\soft\\test1.mp3", 14, "D:\\soft\\t222.mp4");
 
         } catch (Exception e) {
             e.printStackTrace();

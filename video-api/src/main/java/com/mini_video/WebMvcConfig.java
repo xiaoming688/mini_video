@@ -13,8 +13,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/META-INF/resources/")
-                .addResourceLocations("file:C:/imooc_videos_dev/");
+                .addResourceLocations("classpath:/META-INF/resources/");
     }
 
 //	@Bean(initMethod="init")
