@@ -79,7 +79,7 @@ public class VideoServiceImpl implements VideoService {
         QUsers qUsers = QUsers.users;
         JPAQueryFactory query = new JPAQueryFactory(em);
         JPAQuery jpaQuery = query.select(Projections.bean(VideosVO.class,
-                qVideos.audioId, qVideos.id, qVideos.userId, qVideos.videoPath.concat(Constants.VIDEO_FRAME_PREFIX).as("coverPath"),
+                qVideos.audioId, qVideos.id, qVideos.userId, qVideos.videoPath.as("coverPath"),
                 qVideos.videoDesc, qVideos.videoPath, qVideos.videoSeconds,
                 qVideos.videoWidth, qVideos.videoHeight,
                 qVideos.likeCounts, qVideos.status,
@@ -119,7 +119,7 @@ public class VideoServiceImpl implements VideoService {
         JPAQueryFactory query = new JPAQueryFactory(em);
         JPAQuery jpaQuery = query.select(Projections.bean(VideosVO.class, qVideos.audioId,
                 qVideos.videoDesc, qVideos.videoPath, qVideos.videoSeconds,
-                qVideos.videoWidth, qVideos.videoHeight, qVideos.videoPath.concat(Constants.VIDEO_FRAME_PREFIX).as("coverPath"),
+                qVideos.videoWidth, qVideos.videoHeight, qVideos.videoPath.as("coverPath"),
                 qVideos.likeCounts, qVideos.status, qUsers.id.as("userId"), qUsers.faceImage, qUsers.nickname))
                 .from(qVideos)
                 .leftJoin(qUsers)
@@ -151,7 +151,7 @@ public class VideoServiceImpl implements VideoService {
         QUsers qUsers = QUsers.users;
         JPAQuery jpaQuery = new JPAQuery<>(em).select(Projections.bean(VideosVO.class, qVideos.audioId,
                 qVideos.videoDesc, qVideos.videoPath, qVideos.videoSeconds,
-                qVideos.videoWidth, qVideos.videoHeight, qVideos.videoPath.concat(Constants.VIDEO_FRAME_PREFIX).as("coverPath"),
+                qVideos.videoWidth, qVideos.videoHeight, qVideos.videoPath.as("coverPath"),
                 qVideos.likeCounts, qVideos.status, qUsers.id.as("userId"), qUsers.faceImage, qUsers.nickname))
                 .from(qVideos)
                 .leftJoin(qUsers)

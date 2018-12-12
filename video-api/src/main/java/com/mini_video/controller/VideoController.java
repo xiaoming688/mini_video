@@ -164,7 +164,6 @@ public class VideoController {
         if (pageSize == null) {
             pageSize = Constants.PAGE_SIZE;
         }
-        pageSize = 3;
 
         PagedResult result1 = videoService.getAllVideos(video, isSaveRecord, page, pageSize);
         result.put("data", result1);
