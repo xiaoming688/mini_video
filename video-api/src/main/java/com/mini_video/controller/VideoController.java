@@ -10,6 +10,7 @@ import com.mini_video.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -94,13 +98,39 @@ public class VideoController {
                     String fileExtension = fileName.substring(fileName.lastIndexOf("."));
                     long currentTimeMillis = System.currentTimeMillis();
                     ossFileName = currentTimeMillis + fileExtension;
+
                     // 文件上传的最终保存路径
                     String key = Constants.OSS_VIDEO_FOLDER + userId + "/" + currentTimeMillis + fileExtension;
                     log.info("key: " + key);
-                    String uploadRes = aliyunOSSUtil.uploadInputStream(key, file.getInputStream());
-                    result.put("data", key);
-                    log.info("uploadRes: " + uploadRes);
+                    // 判断bgmId是否为空，如果不为空，
+                    // 那就查询bgm的信息，并且合并视频，生产新的视频
+                    if (StringUtil.isNotBlank(bgmId)) {
+                        Bgm bgm = bgmService.queryBgmById(bgmId);
+                        //ffmpeg编译未考虑ssl 识别不到https 先这样处理
+                        String mp3InputPath = commonConstants.getOssHost().replace("https", "http") + bgm.getPath();
+                        log.info("bgmId: " + bgmId + " mp3path: " + mp3InputPath);
+
+//                        String res = aliyunOSSUtil.uploadInputStream(key, file.getInputStream());
+//                        log.info("upload merge res: " + res);
+                        String videoPathTemp = Constants.TEMP_PATH + fileName;
+
+                        File outFile = new File(videoPathTemp);
+                        FileOutputStream fileOutputStream = new FileOutputStream(outFile);
+                        IOUtils.copy(file.getInputStream(), fileOutputStream);
+
+                        MergeVideoMp3 tool = new MergeVideoMp3(Constants.FFMPEG_EXE);
+                        String videoOutputPathTemp = Constants.TEMP_PATH + ossFileName;
+//                        tool.convertorNoAudio(videoPathTemp, null, videoInputPath);
+                        tool.convertor(videoPathTemp, mp3InputPath, videoSeconds, videoOutputPathTemp);
+//                        tool.convertor(commonConstants.getOssHost()+key, mp3InputPath, videoSeconds, videoOutputPathTemp);
+                        String res2 = aliyunOSSUtil.uploadFileRequest(key, videoOutputPathTemp);
+                        log.info("upload merge Res2: " + res2);
+                    } else {
+                        String uploadRes = aliyunOSSUtil.uploadInputStream(key, file.getInputStream());
+                        log.info("uploadRes: " + uploadRes);
+                    }
                     uploadPathDB = key;
+                    result.put("data", key);
                 }
             } else {
                 result.error("upload error");
@@ -110,18 +140,6 @@ public class VideoController {
             log.error(e.toString(), e);
             result.error("upload error");
             return result;
-        }
-        // 判断bgmId是否为空，如果不为空，
-        // 那就查询bgm的信息，并且合并视频，生产新的视频
-        if (StringUtil.isNotBlank(bgmId)) {
-            Bgm bgm = bgmService.queryBgmById(bgmId);
-            String mp3InputPath = commonConstants.getOssHost() + bgm.getPath();
-            log.info("bgmId: " + bgmId + " mp3path: " + mp3InputPath);
-
-            MergeVideoMp3 tool = new MergeVideoMp3(Constants.FFMPEG_EXE);
-            String videoInputPath = Constants.TEMP_PATH + ossFileName;
-            tool.convertor(commonConstants.getOssHost() + uploadPathDB, mp3InputPath, videoSeconds, videoInputPath);
-            String res = aliyunOSSUtil.uploadFileRequest(uploadPathDB, videoInputPath);
         }
 
 //        System.out.println("uploadPathDB=" + uploadPathDB);

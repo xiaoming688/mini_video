@@ -22,10 +22,11 @@ public class MergeVideoMp3 {
         List<String> command = new ArrayList<>();
         command.add(ffmpegEXE);
         command.add("-i");
-        command.add(videoInputPath);
+        command.add(mp3InputPath);
 
         command.add("-i");
-        command.add(mp3InputPath);
+        command.add(videoInputPath);
+
 
         command.add("-t");
         command.add(String.valueOf(seconds));
@@ -62,7 +63,7 @@ public class MergeVideoMp3 {
 
     }
 
-    public void convertor1(String videoInputPath, double seconds, String videoOutputPath) throws Exception {
+    public void convertorNoAudio(String videoInputPath, Double seconds, String videoOutputPath) throws Exception {
 //		ffmpeg.exe -i 苏州大裤衩.mp4 -i bgm.mp3 -t 7 -y 新的视频.mp4
 
         List<String> command = new ArrayList<>();
@@ -70,6 +71,10 @@ public class MergeVideoMp3 {
         command.add("-i");
         command.add(videoInputPath);
 
+        if (seconds != null) {
+            command.add("-t");
+            command.add(String.valueOf(seconds));
+        }
         command.add("-vcodec");
         command.add("copy");
         command.add("-an");
