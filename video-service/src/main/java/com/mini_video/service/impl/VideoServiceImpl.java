@@ -10,6 +10,7 @@ import com.mini_video.repository.VideosRepository;
 import com.mini_video.service.SearchRecordsService;
 import com.mini_video.service.VideoService;
 import com.mini_video.utils.Constants;
+import com.mini_video.utils.DateUtils;
 import com.mini_video.utils.PagedResult;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 @Service("videoService")
@@ -234,6 +236,14 @@ public class VideoServiceImpl implements VideoService {
 
         jpaQuery.offset((page - 1) * pageSize).limit(pageSize);
         QueryResults<CommentsVO> list = jpaQuery.fetchResults();
+
+        List<CommentsVO> result = list.getResults();
+
+        Iterator<CommentsVO> it = result.iterator();
+        while (it.hasNext()){
+            CommentsVO data = it.next();
+            data.setTimeAgoStr(DateUtils.format(data.getCreateTime()));
+        }
 //
         PagedResult pagedResult = new PagedResult();
         pagedResult.setPage(page);

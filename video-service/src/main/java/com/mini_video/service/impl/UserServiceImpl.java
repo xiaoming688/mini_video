@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
             return false;
         }
 
-        return usersLikeVideosRepository.findByUserIdAndVideoId(userId, videoId) == null;
+        return usersLikeVideosRepository.findByUserIdAndVideoId(userId, videoId) != null;
     }
 
     @Override
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
             return false;
         }
 
-        return userFansRepository.findByUserIdAndFanId(userId, fanId) == null;
+        return userFansRepository.findByUserIdAndFanId(userId, fanId) != null;
     }
 
     @Override
