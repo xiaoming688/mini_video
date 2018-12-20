@@ -8,6 +8,7 @@ import com.mini_video.pojo.vo.UserDetailVo;
 import com.mini_video.pojo.vo.UsersVO;
 import com.mini_video.service.UserService;
 import com.mini_video.utils.*;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -145,6 +146,8 @@ public class RegistLoginController {
                 user.setFansCounts(0);
                 user.setReceiveLikeCounts(0);
                 user.setFollowCounts(0);
+                user.setPassword("4QrcOUm6Wau+VuBX8g+IPg==");
+                user.setUsername("test"+ RandomUtils.nextInt(0,10000));
                 user = userService.saveUser(user);
             }
 
