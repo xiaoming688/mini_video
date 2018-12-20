@@ -36,6 +36,9 @@ public class RegistLoginController {
     @Autowired
     private MpWxMiniProgram mpWxMiniProgram;
 
+    @Autowired
+    private AliyunOSSUtil aliyunOSSUtil;
+
 
     @PostMapping("/regist")
     public MData regist(@RequestBody Users user) throws Exception {
@@ -147,7 +150,7 @@ public class RegistLoginController {
                 user.setReceiveLikeCounts(0);
                 user.setFollowCounts(0);
                 user.setPassword("4QrcOUm6Wau+VuBX8g+IPg==");
-                user.setUsername("test"+ RandomUtils.nextInt(0,10000));
+                user.setUsername("test" + RandomUtils.nextInt(0, 10000));
                 user = userService.saveUser(user);
             }
 
@@ -206,14 +209,16 @@ public class RegistLoginController {
                     user.setFaceImage(avatarUrl);
                     user = userService.saveUser(user);
                 } else if (user.getNickname() == null || user.getFaceImage() == null) {
-                    user = new Users();
-                    user.setId(user.getId());
+                    log.info("users id: " + user.getId());
                     user.setNickname(nickname);
                     user.setFaceImage(avatarUrl);
+                    String key = Constants.OSS_FACE_FOLDER + user.getId() + "/" + System.currentTimeMillis() + ".jpg";
+                    aliyunOSSUtil.uploadFileByUrl(key, avatarUrl);
                     user = userService.saveUser(user);
                 }
+
                 result.put("id", user.getId());
-                result.put("faceImage", avatarUrl);
+                result.put("faceImage", user.getFaceImage());
                 result.put("nickName", nickname);
                 result.put("openId", opendId);
                 UsersVO userVO = setUserRedisSessionToken(user);
